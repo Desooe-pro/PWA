@@ -2,9 +2,19 @@ import * as React from "react";
 import { useState } from "react";
 import ShowData from "./ShowData.jsx";
 
+/**
+ * Shows Devices
+ *
+ * @component
+ * @param devices {Array} Les devices que l'on veut afficher
+ * @param type {String} S'il s'agit des WC ou des sondes
+ * @param free {Array} Les WC libres
+ * @returns {Element}
+ * @constructor
+ */
 export const ShowDevices = ({ devices, type, free = null }) => {
   /**
-   * @var clicked : boolean|string false si rien n'est cliqué et l'identifiant du device cliqué sinon
+   * @const clicked {boolean|string} false si rien n'est cliqué et l'identifiant du device cliqué sinon
    */
   const [clicked, setClicked] = useState(false);
 

@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+/**
+ * Shows Data of a selected device
+ *
+ * @component
+ * @param device {Array} Identifiant du device
+ * @param type {String} S'il s'agit des WC ou des sondes
+ * @returns {Element}
+ * @constructor
+ */
 function ShowData({ device, type }) {
   /**
-   * @var batteries : string contenant le niveau de batterie du capteur des toilettes
-   * @var height : string contenant la hauteur de l'eau de la sonde
-   * @var time : Number Heure de la dernière récupération des informations de la sonde
-   * @var timeToilettes : Number Heure de la dernière récupération des informations des WC
+   * @const batteries {String} contenant le niveau de batterie du capteur des toilettes
    */
   const [batteries, setBatteries] = useState("ToSet");
+  /**
+   * @const timeToilettes {Number} Heure de la dernière récupération des informations des WC
+   */
   const [timeToilettes, setTimeToilettes] = useState(-1);
+  /**
+   * @const height {String} contenant la hauteur de l'eau de la sonde
+   */
   const [height, setHeight] = useState("toSet");
+  /**
+   * @const time {Number} Heure de la dernière récupération des informations de la sonde
+   */
   const [time, setTime] = useState(-1);
   useEffect(() => {
     if (
