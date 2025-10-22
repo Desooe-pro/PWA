@@ -32,6 +32,10 @@ function App() {
    * @const timeToilettes {Number} Heure de la dernière récupération des informations des WC
    */
   const [timeToilettes, setTimeToilettes] = useState(-1);
+  /**
+   * @const pasDeCo {boolean} A true si pas de connexion internet
+   */
+  const [pasDeCo, setPasDeCo] = useState(false);
   useEffect(() => {
     /**
      * Récupère et enregistre les identifiants des sondes et l'heure de récupération des informations
@@ -45,7 +49,11 @@ function App() {
           );
           setTimeSondes(new Date().getTime());
           setDevices(devices.data);
+          setPasDeCo(false);
         } catch (e) {
+          if (e.message === "Network Error") {
+            setPasDeCo(true);
+          }
           console.error(e);
         }
       }
@@ -79,7 +87,11 @@ function App() {
               setToilettesFree(toilettesFree + dataFree.data[i].device_id);
             }
           }
+          setPasDeCo(false);
         } catch (e) {
+          if (e.message === "Network Error") {
+            setPasDeCo(true);
+          }
           console.error(e);
         }
       }
@@ -98,6 +110,13 @@ function App() {
         <h1>Vite</h1>
         <ShowDevices devices={devices} type={"sondes"} />
         <ShowDevices devices={toilettes} type={"WC"} free={toilettesFree} />
+      </>
+    );
+  } else if (pasDeCo) {
+    return (
+      <>
+        Vous n'avez pas de connexion internet ou le serveur n'en a pas (C'est
+        surement vous)
       </>
     );
   }
