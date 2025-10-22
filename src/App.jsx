@@ -36,6 +36,7 @@ function App() {
    * @const pasDeCo {boolean} A true si pas de connexion internet
    */
   const [pasDeCo, setPasDeCo] = useState(false);
+
   useEffect(() => {
     /**
      * Récupère et enregistre les identifiants des sondes et l'heure de récupération des informations

@@ -27,6 +27,11 @@ function ShowData({ device, type }) {
    * @const time {Number} Heure de la dernière récupération des informations de la sonde
    */
   const [time, setTime] = useState(-1);
+  /**
+   * @const pasDeCo {boolean} A true si pas de connexion internet
+   */
+  const [pasDeCo, setPasDeCo] = useState(false);
+
   useEffect(() => {
     if (
       type === "sondes" &&
@@ -37,11 +42,19 @@ function ShowData({ device, type }) {
        * @returns {Promise<void>}
        */
       const getHeight = async () => {
-        let res = await axios.get(
-          import.meta.env.VITE_API_URL + "/sondes/lastHeight/" + device,
-        );
-        setHeight(res.data.haut);
-        setTime(new Date().getTime());
+        try {
+          let res = await axios.get(
+            import.meta.env.VITE_API_URL + "/sondes/lastHeight/" + device,
+          );
+          setHeight(res.data.haut);
+          setTime(new Date().getTime());
+          setPasDeCo(false);
+        } catch (e) {
+          if (e.message === "Network Error") {
+            setPasDeCo(true);
+          }
+          console.error(e);
+        }
       };
       void getHeight();
     }
@@ -63,7 +76,11 @@ function ShowData({ device, type }) {
 
           setTimeToilettes(new Date().getTime());
           setBatteries(res.data.battery);
+          setPasDeCo(false);
         } catch (e) {
+          if (e.message === "Network Error") {
+            setPasDeCo(true);
+          }
           console.error(e);
         }
       };
@@ -77,6 +94,13 @@ function ShowData({ device, type }) {
         {type === "sondes" ? <div>Height : {height}m</div> : ""}
         {type === "WC" ? <div>🗲{batteries}%</div> : ""}
       </div>
+    );
+  } else if (pasDeCo) {
+    return (
+      <>
+        Vous n'avez pas de connexion internet ou le serveur n'en a pas (C'est
+        surement vous)
+      </>
     );
   }
 }
