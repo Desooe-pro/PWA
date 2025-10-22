@@ -3,8 +3,10 @@ import { useState } from "react";
 import ShowData from "./ShowData.jsx";
 
 export const ShowDevices = ({ devices, type, free = null }) => {
+  /**
+   * @var clicked : boolean|string false si rien n'est cliqué et l'identifiant du device cliqué sinon
+   */
   const [clicked, setClicked] = useState(false);
-  console.log(clicked);
 
   return (
     <div>

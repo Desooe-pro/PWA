@@ -1,28 +1,34 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import axios from "axios";
 import { ShowDevices } from "./Components/ShowDevices.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
+  /**
+   * @var devices : Array de string contenant les identifiants des différentes sondes des ponts
+   * @var toilettes : Array de string contenant les identifiants des différents capteurs de présence des WC
+   * @var toilettesFree : Array de string contenant les identifiants des WC libres
+   * @var timeSondes : Number Heure de la dernière récupération des informations des sondes
+   * @var timeToilettes : Number Heure de la dernière récupération des informations des WC
+   */
   const [devices, setDevices] = useState("Non récupéré");
   const [toilettes, setToilettes] = useState("Non récupéré");
   const [toilettesFree, setToilettesFree] = useState("Non récupéré");
-  const [timeSondes, setTimeSondes] = useState("toSet");
-  const [timeToilettes, setTimeToilettes] = useState("toSet");
+  const [timeSondes, setTimeSondes] = useState(-1);
+  const [timeToilettes, setTimeToilettes] = useState(-1);
   useEffect(() => {
+    /**
+     * Récupère et enregistre les identifiants des sondes et l'heure de récupération des informations
+     * @returns {Promise<void>}
+     */
     const getDevices = async () => {
-      if (
-        timeSondes < new Date().toLocaleTimeString() - 5 ||
-        timeSondes === "toSet"
-      ) {
+      if (timeSondes < new Date().getTime() - 10000 || timeSondes === -1) {
         try {
           let devices = await axios.get(
             import.meta.env.VITE_API_URL + "/sondes/deviceId",
           );
-          setTimeSondes(new Date().toLocaleTimeString());
+          setTimeSondes(new Date().getTime());
           setDevices(devices.data);
         } catch (e) {
           console.error(e);
@@ -33,10 +39,14 @@ function App() {
   });
 
   useEffect(() => {
+    /**
+     * Récupère et enregistre les identifiants des capteurs toilettes, ceux des toilettes libres et l'heure de récupération des informations
+     * @returns {Promise<void>}
+     */
     const getToilettes = async () => {
       if (
-        timeToilettes < new Date().toLocaleTimeString() - 5 ||
-        timeToilettes === "toSet"
+        timeToilettes < new Date().getTime() - 10000 ||
+        timeToilettes === -1
       ) {
         try {
           let data = await axios.get(
@@ -45,7 +55,7 @@ function App() {
           let dataFree = await axios.get(
             import.meta.env.VITE_API_URL + "/wc/free",
           );
-          setTimeToilettes(new Date().toLocaleTimeString());
+          setTimeToilettes(new Date().getTime());
           setToilettes(data.data);
           for (let i = 0; i < dataFree.data.length; i++) {
             if (i === 0) {
