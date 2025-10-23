@@ -37,6 +37,32 @@ function App() {
    */
   const [pasDeCo, setPasDeCo] = useState(false);
 
+  const [timeNotif, setTimeNotif] = useState(-1);
+  const games = ["1", "2", "3", "4", "5"];
+
+  Notification.requestPermission().then((result) => {
+    if (
+      result === "granted" &&
+      (timeNotif < new Date().getTime() - 10000 || timeNotif === -1)
+    ) {
+      setTimeNotif(new Date().getTime());
+      randomNotification();
+    }
+  });
+
+  function randomNotification() {
+    const randomItem = Math.floor(Math.random() * games.length);
+    const notifTitle = games[randomItem];
+    const notifBody = `Created by Me.`;
+    const notifImg = `data/img/${games[randomItem]}.jpg`;
+    const options = {
+      body: notifBody,
+      icon: notifImg,
+    };
+    new Notification(notifTitle, options);
+    setTimeout(randomNotification, 300000);
+  }
+
   useEffect(() => {
     /**
      * Récupère et enregistre les identifiants des sondes et l'heure de récupération des informations

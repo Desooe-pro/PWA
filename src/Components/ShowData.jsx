@@ -31,6 +31,7 @@ function ShowData({ device, type }) {
    * @const pasDeCo {boolean} A true si pas de connexion internet
    */
   const [pasDeCo, setPasDeCo] = useState(false);
+  console.log(time, time < new Date().getTime() - 10000);
 
   useEffect(() => {
     if (
@@ -46,6 +47,18 @@ function ShowData({ device, type }) {
           let res = await axios.get(
             import.meta.env.VITE_API_URL + "/sondes/lastHeight/" + device,
           );
+          if (res.data.haut - height > 1) {
+            Notification.requestPermission().then((result) => {
+              if (result === "granted") {
+                const notifTitle = "Importante hausse du niveau de l'eau";
+                const options = {
+                  body: "Niveau de l'eau : " + res.data.haut,
+                  icon: "././public/vite.svg",
+                };
+                new Notification(notifTitle, options);
+              }
+            });
+          }
           setHeight(res.data.haut);
           setTime(new Date().getTime());
           setPasDeCo(false);
